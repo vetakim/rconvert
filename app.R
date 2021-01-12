@@ -1,41 +1,38 @@
 library(shiny)
+source(file='xyz2mssk.R')
+source(file='tool.R')
+
 
 ui <- fluidPage (
                  titlePanel("Калькулятор"),
                  fluidRow(
+                          column(1, numericInput( inputId="bGrad", label="Широта, град", 0, min = 0, max = 360, step = 1, width="80px")),
+                          column(1, numericInput( inputId="bMin", label="Широта, мин", 0, min = 0, max = 360, step = 1, width="80px")),
+                          column(1, numericInput( inputId="bSec", label="Широта, сек", 1000.0, min = 0, max = 1e6, step = 1, width="80px"))
+                          ),
+                 fluidRow(
+                          column(1, numericInput( inputId="lGrad", label="Долгота, град", 0, min = 0, max = 360, step = 1, width="80px")),
+                          column(1, numericInput( inputId="lMin", label="Долгота, мин", 0, min = 0, max = 360, step = 1, width="80px")),
+                          column(1, numericInput( inputId="lSec", label="Долгота, сек", 0, min = 0, max = 360, step = 1, width="80px"))
+                          ),
+                 fluidRow(
+                          column(1, numericInput( inputId="height", label="Высота, м", 0, min = 0, max = 360, step = 1, width="80px"))
+                          ),
+
+                 fluidRow(
                           column(3,
-                                 numericInput(
-                                              inputId="xIn",
-                                              label="x",
-                                              1000.0,
-                                              min = 0,
-                                              max = 1e6,
-                                              step = 1
-                                              ),
-                                 numericInput(
-                                              inputId="yIn",
-                                              label="y",
-                                              1000.0,
-                                              min = 0,
-                                              max = 1e6,
-                                              step = 1
-                                              ),
-                                 numericInput(
-                                              inputId="zIn",
-                                              label="z",
-                                              1000.0,
-                                              min = 0,
-                                              max = 1e6,
-                                              step = 1
-                                 )
+                                 numericInput( inputId="xIn", label="x", 1000.0, min = 0, max = 1e6, step = 1),
+                                 numericInput( inputId="yIn", label="y", 1000.0, min = 0, max = 1e6, step = 1),
+                                 numericInput( inputId="zIn", label="z", 1000.0, min = 0, max = 1e6, step = 1)
 
                                  ),
-                          column(3,
+                          column(4,
                                  textOutput("rOut"),
                                  hr(),
                                  textOutput("aOut"),
                                  hr(),
-                                 textOutput("bOut")
+                                 textOutput("bOut"),
+                                 hr()
                           )
 
                           ),
@@ -45,10 +42,13 @@ ui <- fluidPage (
 
 server <- function (input, output) {
     coordinates <- eventReactive(input$calculate, {
-                                out = data.frame("r" = input$xIn * 2,
-                                                 "a" = input$yIn * 3,
-                                                 "b" = input$zIn * 4)
-                               return(out)
+                                     latitude <- deg2rad(unionAngleGrad(input$bGrad, input$bMin, input$bSec))
+                                     longitude <- deg2rad(unionAngleGrad(input$lGrad, input$lMin, input$lSec))
+                                     SC = data.frame( B = latitude, L = latitude, H = input$height)
+                                     xyz = matrix(c(input$xIn, input$yIn, input$zIn), nrow=3)
+                                     rab <- xyz2mssk(xyz, 0, SC)
+                                     out = data.frame(r=rab[1], a=rab[2], b=rab[3])
+                                     return(out)
 }
     )
     output$rOut <- renderText({
