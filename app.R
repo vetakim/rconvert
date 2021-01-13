@@ -53,12 +53,15 @@ server <- function (input, output) {
     )
     output$rOut <- renderText({
         coords = coordinates()$r
+        paste("R = ", coords, " км")
     })
     output$aOut <- renderText({
         coords = rad2deg(coordinates()$a)
+        paste("alpha = ", coords, "град.")
     })
     output$bOut <- renderText({
         coords = rad2deg(coordinates()$b)
+        paste("beta = ", coords, "град.")
     })
 
 }
