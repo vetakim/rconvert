@@ -60,7 +60,7 @@ Z <- XYZ_mpsk[3]
 R <- sqrt(X^2 + Y^2 + Z^2)
 
 A <- - atan(X / Z)
-if  (Z < 0){
+if (Z < 0){
      A <- pi + A
 }
 # A = to2pi(A);
