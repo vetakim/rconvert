@@ -8,7 +8,7 @@ ui <- fluidPage (
                  fluidRow(
                           column(1, numericInput( inputId="bGrad", label="Широта, град", 0, min = 0, max = 360, step = 1, width="80px")),
                           column(1, numericInput( inputId="bMin", label="Широта, мин", 0, min = 0, max = 360, step = 1, width="80px")),
-                          column(1, numericInput( inputId="bSec", label="Широта, сек", 1000.0, min = 0, max = 1e6, step = 1, width="80px"))
+                          column(1, numericInput( inputId="bSec", label="Широта, сек", 0, min = 0, max = 360, step = 1, width="80px"))
                           ),
                  fluidRow(
                           column(1, numericInput( inputId="lGrad", label="Долгота, град", 0, min = 0, max = 360, step = 1, width="80px")),
@@ -16,7 +16,7 @@ ui <- fluidPage (
                           column(1, numericInput( inputId="lSec", label="Долгота, сек", 0, min = 0, max = 360, step = 1, width="80px"))
                           ),
                  fluidRow(
-                          column(1, numericInput( inputId="height", label="Высота, м", 0, min = 0, max = 360, step = 1, width="80px"))
+                          column(1, numericInput( inputId="height", label="Высота, м", 0, min = 0, max = 1e6, step = 1, width="80px"))
                           ),
 
                  fluidRow(
@@ -44,7 +44,7 @@ server <- function (input, output) {
     coordinates <- eventReactive(input$calculate, {
                                      latitude <- deg2rad(unionAngleGrad(input$bGrad, input$bMin, input$bSec))
                                      longitude <- deg2rad(unionAngleGrad(input$lGrad, input$lMin, input$lSec))
-                                     SC = data.frame( B = latitude, L = latitude, H = input$height)
+                                     SC = data.frame( B = latitude, L = longitude, H = input$height * 1e-3)
                                      xyz = matrix(c(input$xIn, input$yIn, input$zIn), nrow=3)
                                      rab <- xyz2mssk(xyz, 0, SC)
                                      out = data.frame(r=rab[1], a=rab[2], b=rab[3])
@@ -55,10 +55,10 @@ server <- function (input, output) {
         coords = coordinates()$r
     })
     output$aOut <- renderText({
-        coords = coordinates()$a
+        coords = rad2deg(coordinates()$a)
     })
     output$bOut <- renderText({
-        coords = coordinates()$b
+        coords = rad2deg(coordinates()$b)
     })
 
 }
