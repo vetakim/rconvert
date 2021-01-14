@@ -10,5 +10,5 @@ rotZ <- function(alpha){
                     0, 0, 1),
                   nrow=3, ncol=3)
 
-    return(mat)
+    return(t(mat))
 }

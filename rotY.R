@@ -9,5 +9,5 @@ rotY <- function(alpha){
                      -sin(alpha), 0, cos(alpha)),
                   nrow=3, ncol=3)
 
-    return(mat)
+    return(t(mat))
 }

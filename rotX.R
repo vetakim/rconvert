@@ -9,5 +9,5 @@ rotX <- function(alpha){
                      0, sin(alpha),  cos(alpha)),
                   nrow=3, ncol=3)
 
-    return(mat)
+    return(t(mat))
 }
