@@ -36,7 +36,7 @@ ui <- fluidPage (
                                  selectInput(
                                              inputId = "outChoice",
                                              label="СК",
-                                             choices= list("XYZ" = "xyz", "RAB" = "rab")
+                                             choices= list("RAB" = "rab", "XYZ" = "xyz")
                                              ),
                                  hr(),
                                  textOutput("rOut"),
